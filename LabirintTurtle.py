@@ -1,7 +1,7 @@
 from termcolor import colored
 
 
-class LabirintTurtle:
+class LabirintTurtle():
     def __init__(self):
         self.map = []
         self.ma = []
