@@ -1,24 +1,28 @@
+from termcolor import colored
+
+
 class LabirintTurtle:
     def __init__(self):
         self.map = []
         self.ma = []
         self.map_vad = None
-        self.size = [0, 0]
+        self.s = [0, 0]
+        self.x = 0
+        self.y = 0
+        self.d = True
 
     def load_map(self, name):
-        file = open(name, "r")
+        file = open(name, "r", encoding='utf-8')
         line = file.readline()
         while line.find(" ") != -1 or line.find("*") != -1:
             self.map.append(list(line[:-1]))
             self.ma.append(list(line[:-1]))
             line = file.readline()
-        self.size[0] = len(self.ma)
-        self.size[1] = len(self.ma[0])
         try:
-            x = int(line)
+            self.x = int(line)
             line = file.readline()
-            y = int(line)
-            self.map[x][y] = "A"
+            self.y = int(line)
+            self.map[self.x][self.y] = "🦖"
         except ValueError:
             print("Ошибочка")
 
@@ -26,13 +30,13 @@ class LabirintTurtle:
         if turtle == True:
             for i in range(0, len(self.map)):
                 for j in range(0, len(self.map[i])):
-                    print(self.map[i][j], end="")
-                print(sep="\n")
+                    print(colored(self.map[i][j], "red"), end="\t")
+                print("\t")
         else:
             for i in range(0, len(self.ma)):
                 for j in range(0, len(self.ma[i])):
-                    print(self.ma[i][j], end="")
-                print(sep="\n")
+                    print(colored(self.ma[i][j], "blue"), end="\t")
+                print("\t")
 
     def check_map(self, name=None):
         c = None
@@ -50,82 +54,74 @@ class LabirintTurtle:
             self.map_vad = False
 
         if self.map_vad:
-            co1 = 0
-            co2 = 0
-            co3 = 0
-            co4 = 0
-            u = False
-            b = False
-            l = False
-            r = False
-            up = self.ma[0]
-            for i in up:
-                if i == "*":
-                    co1 += 1
-            bottom = self.ma[-1]
-            for i in bottom:
-                if i == "*":
-                    co2 += 1
-            left = [i[0] for i in self.ma]
-            for i in left:
-                if i == "*":
-                    co3 += 1
-            right = [i[-1] for i in self.ma]
-            for i in right:
-                if i == "*":
-                    co4 += 1
-
-            if len(up) // 2 == co1:
-                u = True
-            if len(bottom) // 2 == co2:
-                b = True
-            if len(left) != co3:
-                l = True
-            if len(right) != co4:
-                r = True
-            if u == False and b == False and l == False and r == False:
-                self.map_vad = False
+            for i in range(0, len(self.map)):
+                for j in range(0, len(self.map[i])):
+                    if i == 0 or j == 0 or \
+                            i == self.map or j == self.map[i]:
+                        if self.map[i][j] == " ":
+                            self.map_vad = True
+                            self.s = [i, j]
 
         if self.map_vad:
-            tur = ''
-            up = self.map[0]
-            bottom = self.map[-1]
-            left = [i[0] for i in self.map]
-            right = [i[-1] for i in self.map]
-            for i in up:
-                if i == 'A':
-                    tur = "turtle"
-                    break
-                else:
-                    u = True
-            for i in bottom:
-                if i == 'A':
-                    tur = "turtle"
-            for i in left:
-                if i == 'A':
-                    tur = "turtle"
-            for i in right:
-                if i == 'A':
-                    tur = "turtle"
-
-            if tur == "turtle":
+            if self.ma[self.x][self.y] == "*":
                 self.map_vad = False
             else:
                 self.map_vad = True
 
         if self.map_vad:
+            if self.d:
+                self.map_vad = True
+            else:
+                self.map_vad = False
+
+        if self.map_vad:
             print("Yes")
+            print(self.s)
         else:
             print("No")
 
     def exit_count_step(self):
-        pass
+        c = 0
+        for i in range(0, len(self.map)):
+            for j in range(0, len(self.map[i])):
+                if self.map[i][j] == ".":
+                    c += 1
+        print(str(c) + " колво шагов")
 
     def exit_show_step(self):
-        pass
+        x, y = self.x, self.y
+        while x != self.s[0] and y != self.s[1]:
+
+            if self.map[x - 1][y] != "*":
+                self.map[x - 1][y] = "."
+                x, y = x - 1, y
+                break
+
+            if self.map[x][y + 1] != "*":
+                self.map[x][y + 1] = "."
+                x, y = x, y + 1
+                break
+
+            if self.map[x + 1][y] != "*":
+                self.map[x + 1][y] = "."
+                x, y = x, y + 1
+                break
+
+            if self.map[x][y - 1] != "*":
+                self.map[x][y - 1] = "."
+                x, y = x, y - 1
+                break
+        self.map[self.s[0]][self.s[1]] = "."
+
+        if self.map[self.s[0]][self.s[1]] == ".":
+            self.d = True
+        else:
+            self.d = False
 
 
 map = LabirintTurtle()
 map.load_map("123.txt")
-map.show_map(turtle=True)
 map.check_map()
+map.exit_show_step()
+map.show_map(turtle=True)
+map.exit_count_step()
