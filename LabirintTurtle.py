@@ -23,6 +23,7 @@ class LabirintTurtle:
             line = file.readline()
             self.y = int(line)
             self.map[self.x][self.y] = "🦖"
+            self.check_map()
         except ValueError:
             print("Ошибочка")
 
@@ -76,7 +77,6 @@ class LabirintTurtle:
 
         if self.map_vad:
             print("Yes")
-            print(self.s)
         else:
             print("No")
 
@@ -84,7 +84,7 @@ class LabirintTurtle:
         c = 0
         for i in range(0, len(self.map)):
             for j in range(0, len(self.map[i])):
-                if self.map[i][j] == ".":
+                if self.map[i][j] == "🌺":
                     c += 1
         print(str(c) + " колво шагов")
 
@@ -93,27 +93,27 @@ class LabirintTurtle:
         while x != self.s[0] and y != self.s[1]:
 
             if self.map[x - 1][y] != "*":
-                self.map[x - 1][y] = "."
+                self.map[x - 1][y] = "🌺"
                 x, y = x - 1, y
                 break
 
             if self.map[x][y + 1] != "*":
-                self.map[x][y + 1] = "."
+                self.map[x][y + 1] = "🌺"
                 x, y = x, y + 1
                 break
 
             if self.map[x + 1][y] != "*":
-                self.map[x + 1][y] = "."
+                self.map[x + 1][y] = "🌺"
                 x, y = x, y + 1
                 break
 
             if self.map[x][y - 1] != "*":
-                self.map[x][y - 1] = "."
+                self.map[x][y - 1] = "🌺"
                 x, y = x, y - 1
                 break
-        self.map[self.s[0]][self.s[1]] = "."
+        self.map[self.s[0]][self.s[1]] = "🌺"
 
-        if self.map[self.s[0]][self.s[1]] == ".":
+        if self.map[self.s[0]][self.s[1]] == "🌺":
             self.d = True
         else:
             self.d = False
